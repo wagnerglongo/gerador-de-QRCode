@@ -1,0 +1,185 @@
+/* ==========================================================================
+   Gerador de QR Code: estética de etiqueta impressa
+   ========================================================================== */
+
+@font-face { font-family: "Archivo"; src: url("../fonts/archivo-400.woff2") format("woff2"); font-weight: 400; font-display: swap; }
+@font-face { font-family: "Archivo"; src: url("../fonts/archivo-600.woff2") format("woff2"); font-weight: 600; font-display: swap; }
+@font-face { font-family: "Archivo"; src: url("../fonts/archivo-800.woff2") format("woff2"); font-weight: 800; font-display: swap; }
+
+:root {
+  --signal: #ffd43b;   /* amarelo de sinalização: fundo da página */
+  --ink: #1d1d1b;      /* tinta: texto, bordas, botões */
+  --paper: #ffffff;
+  --muted: #55524a;
+  --warn-bg: #fff3c4;
+  --error: #a4161a;
+
+  --font: "Archivo", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --border: 2px solid var(--ink);
+  --radius: 4px;
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+}
+
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--signal);
+  color: var(--ink);
+  font: 400 1rem/1.5 var(--font);
+  -webkit-font-smoothing: antialiased;
+}
+
+:focus-visible { outline: 3px solid var(--ink); outline-offset: 2px; }
+
+[hidden] { display: none !important; }
+
+.visually-hidden {
+  position: absolute !important;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+
+/* --- Abertura ------------------------------------------------------------ */
+.intro {
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: clamp(2rem, 6vw, 4rem) var(--gutter) clamp(1.5rem, 4vw, 2.5rem);
+}
+.intro h1 {
+  margin: 0 0 0.75rem;
+  font-size: clamp(2.6rem, 8vw, 5.25rem);
+  font-weight: 800;
+  line-height: 0.95;
+  letter-spacing: -0.035em;
+}
+.intro p { margin: 0; max-width: 46ch; font-size: 1.125rem; }
+
+/* --- Layout -------------------------------------------------------------- */
+.layout {
+  display: grid;
+  gap: 1.5rem;
+  max-width: 68rem;
+  margin: 0 auto;
+  padding: 0 var(--gutter) var(--gutter);
+}
+@media (min-width: 56rem) {
+  .layout { grid-template-columns: minmax(0, 1fr) 24rem; align-items: start; }
+  .result { position: sticky; top: 1.5rem; }
+}
+
+/* --- Formulário ---------------------------------------------------------- */
+.panel {
+  padding: clamp(1.25rem, 3vw, 2rem);
+  background: var(--paper);
+  border: var(--border);
+  border-radius: var(--radius);
+}
+fieldset { margin: 0; padding: 0; border: 0; min-width: 0; }
+legend { float: left; width: 100%; padding: 0; margin-bottom: 0.75rem; font-weight: 800; font-size: 1.1rem; }
+legend + * { clear: both; }
+
+.types { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-bottom: 1.5rem; }
+.types legend { width: 100%; }
+.type input { position: absolute; opacity: 0; }
+.type span {
+  display: inline-block;
+  padding: 0.5rem 0.95rem;
+  border: var(--border);
+  border-radius: 999px;
+  font-weight: 600;
+  cursor: pointer;
+  user-select: none;
+}
+.type span:hover { background: var(--warn-bg); }
+.type input:checked + span { background: var(--ink); color: var(--paper); }
+.type input:focus-visible + span { outline: 3px solid var(--ink); outline-offset: 2px; }
+
+.group { display: grid; gap: 1rem; }
+.look { display: grid; gap: 1rem; margin-top: 1.75rem; padding-top: 1.5rem; border-top: 2px dashed var(--ink); }
+
+.field { display: grid; gap: 0.35rem; min-width: 0; }
+.field label { font-weight: 600; font-size: 0.925rem; }
+.field input:not([type="color"]),
+.field select,
+.field textarea {
+  width: 100%;
+  padding: 0.7rem 0.8rem;
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--paper);
+  color: var(--ink);
+  font: inherit;
+}
+.field textarea { resize: vertical; }
+.field input[type="color"] {
+  width: 3.25rem;
+  height: 2.9rem;
+  padding: 0.2rem;
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--paper);
+  cursor: pointer;
+}
+.field-row { display: flex; flex-wrap: wrap; align-items: end; gap: 1rem; }
+.field--grow { flex: 1; min-width: 11rem; }
+.check { display: flex; align-items: center; gap: 0.5rem; padding-bottom: 0.7rem; font-weight: 600; cursor: pointer; }
+.check input { width: 1.1rem; height: 1.1rem; accent-color: var(--ink); }
+
+.hint { margin: 0; color: var(--muted); font-size: 0.925rem; }
+.warning {
+  margin: 0;
+  padding: 0.65rem 0.85rem;
+  border-left: 4px solid var(--ink);
+  background: var(--warn-bg);
+  font-size: 0.925rem;
+}
+
+/* --- Resultado: o cartão ------------------------------------------------- */
+.card {
+  margin: 0;
+  padding: 1.25rem 1.25rem 1rem;
+  background: var(--card-bg, var(--paper));
+  color: var(--card-fg, var(--ink));
+  border: var(--border);
+  border-radius: var(--radius);
+  box-shadow: 8px 8px 0 var(--ink);
+  transform: rotate(-1.2deg); /* etiqueta colada à mão */
+}
+.card__qr svg { display: block; width: 100%; height: auto; }
+.card__caption { margin-top: 0.5rem; text-align: center; font-weight: 600; font-size: 1.1rem; }
+.card.is-empty .card__qr { opacity: 0.12; }
+
+.result__error { margin: 1.25rem 0 0; font-weight: 600; color: var(--error); }
+.result__meta { margin: 1.25rem 0 0; font-size: 0.875rem; color: var(--muted); }
+
+.actions { display: flex; flex-wrap: wrap; gap: 0.5rem; margin-top: 1rem; }
+.button {
+  padding: 0.7rem 1.1rem;
+  border: var(--border);
+  border-radius: var(--radius);
+  background: var(--ink);
+  color: var(--paper);
+  font: 600 1rem var(--font);
+  cursor: pointer;
+}
+.button:hover:not(:disabled) { transform: translate(-1px, -1px); box-shadow: 3px 3px 0 var(--ink); }
+.button--outline { background: var(--paper); color: var(--ink); }
+.button:disabled { opacity: 0.4; cursor: not-allowed; }
+
+.status { min-height: 1.5rem; margin: 0.75rem 0 0; font-weight: 600; }
+
+/* --- Rodapé -------------------------------------------------------------- */
+.footer { max-width: 68rem; margin: 0 auto; padding: 1rem var(--gutter) 2.5rem; font-size: 0.925rem; }
+.footer p { margin: 0; }
+.footer a { color: var(--ink); font-weight: 600; }
+
+@media (prefers-reduced-motion: reduce) {
+  .card { transform: none; }
+  .button:hover:not(:disabled) { transform: none; }
+}
